@@ -69,14 +69,11 @@ func main() {
 		cfg: &config,
 	}, version.NewCollector(name))
 
-	// http handler
-	h := promhttp.HandlerFor(prometheus.Gatherers{
-		prometheus.DefaultGatherer,
-	}, promhttp.HandlerOpts{})
-
+	// Regist http handler
 	http.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
-		// Delegate http serving to Prometheus client library,
-		//  which will call collector.Collect.
+		h := promhttp.HandlerFor(prometheus.Gatherers{
+			prometheus.DefaultGatherer,
+		}, promhttp.HandlerOpts{})
 		h.ServeHTTP(w, r)
 	})
 
